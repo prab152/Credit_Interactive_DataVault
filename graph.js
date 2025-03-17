@@ -1,17 +1,16 @@
-// Set up SVG dimensions
+// Set SVG size to full screen
 const width = window.innerWidth;
 const height = window.innerHeight;
 
-const svg = d3.select("body")
-    .append("svg")
+// Select SVG
+const svg = d3.select("svg")
     .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet")
-    .style("width", "100vw")
-    .style("height", "100vh");
+    .attr("preserveAspectRatio", "xMidYMid meet");
 
-// Define marker for arrowheads
-svg.append("defs").append("marker")
-    .attr("id", "arrowhead")
+// Define arrow markers for directed edges
+const defs = svg.append("defs");
+defs.append("marker")
+    .attr("id", "arrow")
     .attr("viewBox", "0 -5 10 10")
     .attr("refX", 15)
     .attr("refY", 0)
@@ -22,23 +21,35 @@ svg.append("defs").append("marker")
     .attr("d", "M0,-5L10,0L0,5")
     .attr("fill", "#999");
 
-// Load graph data
+// Load data files
 Promise.all([
     d3.json("config/nodes-links.json"),
     d3.json("config/clickable-nodes.json"),
     d3.json("config/node-details.json")
 ]).then(([graph, clickableNodes, nodeDetails]) => {
+
+    // Force simulation
     const simulation = d3.forceSimulation(graph.nodes)
         .force("link", d3.forceLink(graph.links).id(d => d.id).distance(150))
         .force("charge", d3.forceManyBody().strength(-300))
         .force("center", d3.forceCenter(width / 2, height / 2))
         .on("tick", ticked);
 
+    // Draw links
     const link = svg.selectAll(".link")
         .data(graph.links)
         .enter().append("line")
         .attr("class", "link");
 
+    // Link labels
+    const linkLabels = svg.selectAll(".link-label")
+        .data(graph.links)
+        .enter().append("text")
+        .attr("class", "link-label")
+        .attr("dy", -5)
+        .text(d => d.label);
+
+    // Draw nodes
     const node = svg.selectAll(".node")
         .data(graph.nodes)
         .enter().append("g")
@@ -50,13 +61,13 @@ Promise.all([
 
     // Draw circles
     node.append("circle")
-        .attr("r", 10)
+        .attr("r", 12)
         .attr("fill", d => getColor(d.group))
         .on("click", d => showNodeDetails(d.id));
 
     // Add text labels
     node.append("text")
-        .attr("dy", -15)
+        .attr("dy", -18)
         .text(d => d.id);
 
     function ticked() {
@@ -64,6 +75,9 @@ Promise.all([
             .attr("y1", d => d.source.y)
             .attr("x2", d => d.target.x)
             .attr("y2", d => d.target.y);
+
+        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
+                  .attr("y", d => (d.source.y + d.target.y) / 2);
 
         node.attr("transform", d => `translate(${d.x}, ${d.y})`);
     }
