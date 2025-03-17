@@ -1,0 +1,11 @@
+{
+    "nodes": [
+        { "id": "Customer", "name": "Customer Hub", "color": "yellow" },
+        { "id": "Loan", "name": "Loan Hub", "color": "yellow" },
+        { "id": "SME", "name": "SME Sector", "color": "green" }
+    ],
+    "links": [
+        { "source": "Customer", "target": "Loan", "label": "Has Loan", "color": "red" },
+        { "source": "Loan", "target": "SME", "label": "Belongs to", "color": "red" }
+    ]
+}

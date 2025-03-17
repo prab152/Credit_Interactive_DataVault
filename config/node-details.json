@@ -1,0 +1,9 @@
+{
+    "title": "Customer Hub Table",
+    "description": "Stores unique customer identifiers",
+    "columns": [
+        { "name": "CustomerID", "type": "VARCHAR(20)" },
+        { "name": "CustomerName", "type": "VARCHAR(100)" },
+        { "name": "Country", "type": "VARCHAR(50)" }
+    ]
+}
