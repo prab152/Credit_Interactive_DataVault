@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Load the graph data from nodes-links.json
     Promise.all([
-        fetch("nodes-links.json").then(response => response.json()),
-        fetch("clickable-nodes.json").then(response => response.json()),
-        fetch("node-details.json").then(response => response.json())
+        fetch("config/nodes-links.json").then(response => response.json()),
+        fetch("config/clickable-nodes.json").then(response => response.json()),
+        fetch("config/node-details.json").then(response => response.json())
     ]).then(([graph, clickableNodes, nodeDetails]) => {
         const width = window.innerWidth;
         const height = window.innerHeight;
