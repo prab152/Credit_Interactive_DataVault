@@ -1,4 +1,5 @@
-nodes = [
+{
+nodes: [
     { id: "Customer", group: "yellow" },
     { id: "Loan", group: "yellow" },
     { id: "Product", group: "yellow" },
@@ -18,9 +19,8 @@ nodes = [
     { id: "Loan_InterestRate_Link", group: "red" },
     { id: "Forex_Geography_Link", group: "red" },
     { id: "Bucket_Key_Loan", group: "yellow" }
-];
-
-links = [
+],
+links: [
     { source: "Customer", target: "Loan_Customer_Link", label: "has" },
     { source: "Loan_Customer_Link", target: "Loan", label: "associated with" },
     { source: "Loan", target: "Loan_InterestRate_Link", label: "has" },
@@ -40,5 +40,6 @@ links = [
     { source: "Corporate_Credit", target: "Loan", label: "is a type of" },
     { source: "Bucket_Key_Loan", target: "Loan", label: "groups" },
     { source: "Bucket_Key_Loan", target: "Loan_Customer_Link", label: "groups" }
-];
+]
+    }
 
