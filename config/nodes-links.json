@@ -1,11 +1,44 @@
-{
-    "nodes": [
-        { "id": "Customer", "name": "Customer Hub", "color": "yellow" },
-        { "id": "Loan", "name": "Loan Hub", "color": "yellow" },
-        { "id": "SME", "name": "SME Sector", "color": "green" }
-    ],
-    "links": [
-        { "source": "Customer", "target": "Loan", "label": "Has Loan", "color": "red" },
-        { "source": "Loan", "target": "SME", "label": "Belongs to", "color": "red" }
-    ]
-}
+nodes = [
+    { id: "Customer", group: "yellow" },
+    { id: "Loan", group: "yellow" },
+    { id: "Product", group: "yellow" },
+    { id: "SME_Credit", group: "yellow" },
+    { id: "Mortgage_Credit", group: "yellow" },
+    { id: "Farmer_Credit", group: "yellow" },
+    { id: "Corporate_Credit", group: "yellow" },
+    { id: "Geography", group: "yellow" },
+    { id: "InterestRate", group: "green" },
+    { id: "CreditScore", group: "green" },
+    { id: "LoanDetails", group: "green" },
+    { id: "ForexData", group: "green" },
+    { id: "Currency", group: "green" },
+    { id: "Loan_Customer_Link", group: "red" },
+    { id: "Product_Loan_Link", group: "red" },
+    { id: "Customer_Geography_Link", group: "red" },
+    { id: "Loan_InterestRate_Link", group: "red" },
+    { id: "Forex_Geography_Link", group: "red" },
+    { id: "Bucket_Key_Loan", group: "yellow" }
+];
+
+links = [
+    { source: "Customer", target: "Loan_Customer_Link", label: "has" },
+    { source: "Loan_Customer_Link", target: "Loan", label: "associated with" },
+    { source: "Loan", target: "Loan_InterestRate_Link", label: "has" },
+    { source: "Loan_InterestRate_Link", target: "InterestRate", label: "determined by" },
+    { source: "Loan", target: "LoanDetails", label: "described by" },
+    { source: "Loan", target: "Product_Loan_Link", label: "linked to" },
+    { source: "Product_Loan_Link", target: "Product", label: "offered under" },
+    { source: "Customer", target: "CreditScore", label: "evaluated by" },
+    { source: "Customer", target: "Customer_Geography_Link", label: "located in" },
+    { source: "Customer_Geography_Link", target: "Geography", label: "belongs to" },
+    { source: "Geography", target: "Forex_Geography_Link", label: "has" },
+    { source: "Forex_Geography_Link", target: "ForexData", label: "linked to" },
+    { source: "ForexData", target: "Currency", label: "based on" },
+    { source: "SME_Credit", target: "Loan", label: "is a type of" },
+    { source: "Mortgage_Credit", target: "Loan", label: "is a type of" },
+    { source: "Farmer_Credit", target: "Loan", label: "is a type of" },
+    { source: "Corporate_Credit", target: "Loan", label: "is a type of" },
+    { source: "Bucket_Key_Loan", target: "Loan", label: "groups" },
+    { source: "Bucket_Key_Loan", target: "Loan_Customer_Link", label: "groups" }
+];
+
