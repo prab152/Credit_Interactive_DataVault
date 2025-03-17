@@ -1,9 +1,116 @@
 {
-    "title": "Customer Hub Table",
-    "description": "Stores unique customer identifiers",
-    "columns": [
-        { "name": "CustomerID", "type": "VARCHAR(20)" },
-        { "name": "CustomerName", "type": "VARCHAR(100)" },
-        { "name": "Country", "type": "VARCHAR(50)" }
-    ]
+    "Customer": {
+        "description": "Stores customer data for loan processing.",
+        "columns": [
+            { "name": "Customer_ID", "type": "String" },
+            { "name": "Name", "type": "String" },
+            { "name": "Age", "type": "Integer" },
+            { "name": "CreditScore", "type": "Integer" },
+            { "name": "Location", "type": "String" }
+        ]
+    },
+    "Loan": {
+        "description": "Represents loans issued by the bank.",
+        "columns": [
+            { "name": "Loan_ID", "type": "String" },
+            { "name": "Amount", "type": "Decimal" },
+            { "name": "InterestRate", "type": "Decimal" },
+            { "name": "Duration", "type": "Integer" }
+        ]
+    },
+    "Product": {
+        "description": "Different loan products offered by the bank.",
+        "columns": [
+            { "name": "Product_ID", "type": "String" },
+            { "name": "Name", "type": "String" },
+            { "name": "Category", "type": "String" }
+        ]
+    },
+    "SME_Credit": {
+        "description": "Loans provided to Small and Medium Enterprises.",
+        "columns": [
+            { "name": "Loan_ID", "type": "String" },
+            { "name": "Business_Name", "type": "String" },
+            { "name": "Annual_Turnover", "type": "Decimal" }
+        ]
+    },
+    "Mortgage_Credit": {
+        "description": "Mortgage loans provided by the bank.",
+        "columns": [
+            { "name": "Loan_ID", "type": "String" },
+            { "name": "Property_Value", "type": "Decimal" },
+            { "name": "Down_Payment", "type": "Decimal" }
+        ]
+    },
+    "Farmer_Credit": {
+        "description": "Loans provided to farmers.",
+        "columns": [
+            { "name": "Loan_ID", "type": "String" },
+            { "name": "Farm_Size", "type": "Decimal" },
+            { "name": "Crop_Type", "type": "String" }
+        ]
+    },
+    "Corporate_Credit": {
+        "description": "Loans issued to large corporations.",
+        "columns": [
+            { "name": "Loan_ID", "type": "String" },
+            { "name": "Company_Name", "type": "String" },
+            { "name": "Revenue", "type": "Decimal" }
+        ]
+    },
+    "Geography": {
+        "description": "Represents different geographies where the bank operates.",
+        "columns": [
+            { "name": "Region_ID", "type": "String" },
+            { "name": "Country", "type": "String" },
+            { "name": "City", "type": "String" }
+        ]
+    },
+    "InterestRate": {
+        "description": "Contains interest rates applicable to loans.",
+        "columns": [
+            { "name": "Rate_ID", "type": "String" },
+            { "name": "Rate", "type": "Decimal" },
+            { "name": "Loan_Type", "type": "String" }
+        ]
+    },
+    "CreditScore": {
+        "description": "Credit score of customers for evaluating eligibility.",
+        "columns": [
+            { "name": "Customer_ID", "type": "String" },
+            { "name": "Score", "type": "Integer" },
+            { "name": "Risk_Category", "type": "String" }
+        ]
+    },
+    "LoanDetails": {
+        "description": "Additional details of a loan.",
+        "columns": [
+            { "name": "Loan_ID", "type": "String" },
+            { "name": "Payment_Schedule", "type": "String" },
+            { "name": "Collateral", "type": "String" }
+        ]
+    },
+    "ForexData": {
+        "description": "Foreign exchange data related to loan transactions.",
+        "columns": [
+            { "name": "Forex_ID", "type": "String" },
+            { "name": "Currency", "type": "String" },
+            { "name": "Exchange_Rate", "type": "Decimal" }
+        ]
+    },
+    "Currency": {
+        "description": "Different currencies used in financial transactions.",
+        "columns": [
+            { "name": "Currency_Code", "type": "String" },
+            { "name": "Currency_Name", "type": "String" },
+            { "name": "Symbol", "type": "String" }
+        ]
+    },
+    "Bucket_Key_Loan": {
+        "description": "A bucket key that groups similar loans together.",
+        "columns": [
+            { "name": "Bucket_ID", "type": "String" },
+            { "name": "Loan_Category", "type": "String" }
+        ]
+    }
 }
