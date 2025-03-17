@@ -11,51 +11,12 @@
         .node circle { stroke: #000; stroke-width: 1.5px; }
         .link { stroke-width: 2px; marker-end: url(#arrow); }
         .label { font-size: 12px; fill: black; }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border: 2px solid black;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
-        }
-        .modal h2 { margin-top: 0; }
-        .close-btn {
-            background: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            float: right;
-        }
     </style>
 </head>
 <body>
-
     <svg></svg>
-
-    <!-- Modal -->
-    <div id="modal" class="modal">
-        <button class="close-btn" onclick="closeModal()">Close</button>
-        <h2>Customer Table</h2>
-        <table border="1" cellpadding="5">
-            <tr><th>Column Name</th><th>Description</th></tr>
-            <tr><td>Customer_ID</td><td>Unique identifier for the customer</td></tr>
-            <tr><td>Name</td><td>Full name of the customer</td></tr>
-            <tr><td>Date_of_Birth</td><td>Customer's date of birth</td></tr>
-            <tr><td>Credit_Score</td><td>Credit score assigned to the customer</td></tr>
-            <tr><td>Location</td><td>Geographical location of the customer</td></tr>
-        </table>
-    </div>
-
     <script>
-         // Define the nodes
+        // Define the nodes
         const nodes = [
             { id: "Customer", group: "yellow" },
             { id: "Loan", group: "yellow" },
@@ -100,9 +61,11 @@
             { source: "Bucket_Key_Loan", target: "Loan_Customer_Link", label: "groups" }
         ];
 
+        // Set up the SVG canvas
         const width = window.innerWidth, height = window.innerHeight;
         const svg = d3.select("svg");
 
+        // Define arrow marker for link direction
         svg.append("defs").append("marker")
             .attr("id", "arrow")
             .attr("viewBox", "0 -5 10 10")
@@ -115,31 +78,30 @@
             .attr("d", "M0,-5L10,0L0,5")
             .style("fill", "black");
 
+        // Define force simulation
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(150))
             .force("charge", d3.forceManyBody().strength(-300))
             .force("center", d3.forceCenter(width / 2, height / 2));
 
+        // Add links
         const link = svg.selectAll(".link")
             .data(links)
             .enter().append("line")
             .attr("class", "link");
 
+        // Add link labels
         const linkText = svg.selectAll(".link-label")
             .data(links)
             .enter().append("text")
             .attr("class", "label")
             .text(d => d.label);
 
+        // Add nodes
         const node = svg.selectAll(".node")
             .data(nodes)
             .enter().append("g")
-            .attr("class", "node")
-            .on("click", handleNodeClick)
-            .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
+            .attr("class", "node");
 
         node.append("circle")
             .attr("r", 10)
@@ -157,38 +119,9 @@
                 .attr("y2", d => d.target.y);
 
             node.attr("transform", d => `translate(${d.x},${d.y})`);
-
             linkText.attr("x", d => (d.source.x + d.target.x) / 2)
                 .attr("y", d => (d.source.y + d.target.y) / 2);
         });
-
-        function handleNodeClick(event, d) {
-            if (d.id === "Customer") {
-                document.getElementById("modal").style.display = "block";
-            }
-        }
-
-        function closeModal() {
-            document.getElementById("modal").style.display = "none";
-        }
-
-        function dragstarted(event, d) {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-        }
-
-        function dragged(event, d) {
-            d.fx = event.x;
-            d.fy = event.y;
-        }
-
-        function dragended(event, d) {
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-        }
     </script>
 </body>
 </html>
-
