@@ -6,25 +6,12 @@
     <title>Data Vault - Credit Domain</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; }
-        svg { width: 100vw; height: 100vh; border: 1px solid #ccc; }
-        
-        /* Ensure edges are visible */
-        .link { 
-            stroke: black; 
-            stroke-width: 2px; 
-            marker-end: url(#arrow); 
-        }
+        body { font-family: Arial, sans-serif; margin: 0; overflow: hidden; }
+        svg { width: 100vw; height: 100vh; background: #f8f8f8; }
 
-        .node circle { 
-            stroke: black; 
-            stroke-width: 1.5px; 
-        }
-
-        .label { 
-            font-size: 12px; 
-            fill: black; 
-        }
+        .link { stroke: black; stroke-width: 2px; marker-end: url(#arrow); }
+        .node circle { stroke: black; stroke-width: 1.5px; cursor: grab; }
+        .label { font-size: 12px; fill: black; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -73,7 +60,6 @@
             { source: "Bucket_Key_Loan", target: "Loan", label: "groups" },
             { source: "Bucket_Key_Loan", target: "Loan_Customer_Link", label: "groups" }
         ];
-
         const width = window.innerWidth, height = window.innerHeight;
         const svg = d3.select("svg");
 
@@ -158,4 +144,5 @@
     </script>
 </body>
 </html>
+
 
