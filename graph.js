@@ -1,125 +1,119 @@
-// Set SVG size
-const width = window.innerWidth;
-const height = window.innerHeight;
+document.addEventListener("DOMContentLoaded", function () {
+    // Load the graph data from nodes-links.json
+    Promise.all([
+        fetch("nodes-links.json").then(response => response.json()),
+        fetch("clickable-nodes.json").then(response => response.json()),
+        fetch("node-details.json").then(response => response.json())
+    ]).then(([graph, clickableNodes, nodeDetails]) => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
 
-// Select SVG
-const svg = d3.select("svg")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .attr("preserveAspectRatio", "xMidYMid meet");
+        const svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-// Define arrow markers for directed edges
-const defs = svg.append("defs");
-defs.append("marker")
-    .attr("id", "arrow")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 15)
-    .attr("refY", 0)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
-    .attr("orient", "auto")
-    .append("path")
-    .attr("d", "M0,-5L10,0L0,5")
-    .attr("fill", "#999");
+        const simulation = d3.forceSimulation(graph.nodes)
+            .force("link", d3.forceLink(graph.links).id(d => d.id).distance(150))
+            .force("charge", d3.forceManyBody().strength(-500))
+            .force("center", d3.forceCenter(width / 2, height / 2));
 
-// Load data files
-Promise.all([
-    d3.json("config/nodes-links.json"),
-    d3.json("config/clickable-nodes.json"),
-    d3.json("config/node-details.json")
-]).then(([graph, clickableNodes, nodeDetails]) => {
+        // Add links (edges)
+        const link = svg.selectAll(".link")
+            .data(graph.links)
+            .enter().append("line")
+            .attr("class", "link")
+            .attr("stroke", "#999")
+            .attr("stroke-width", 2);
 
-    // Force simulation
-    const simulation = d3.forceSimulation(graph.nodes)
-        .force("link", d3.forceLink(graph.links).id(d => d.id).distance(150))
-        .force("charge", d3.forceManyBody().strength(-300))
-        .force("center", d3.forceCenter(width / 2, height / 2))
-        .on("tick", ticked);
+        // Add link labels
+        const linkText = svg.selectAll(".link-text")
+            .data(graph.links)
+            .enter().append("text")
+            .attr("class", "link-text")
+            .attr("font-size", "12px")
+            .attr("fill", "#555")
+            .text(d => d.label);
 
-    // Draw links
-    const link = svg.selectAll(".link")
-        .data(graph.links)
-        .enter().append("line")
-        .attr("class", "link")
-        .attr("stroke", "#999")
-        .attr("stroke-opacity", 0.8)
-        .attr("stroke-width", 2)
-        .attr("marker-end", "url(#arrow)");
+        // Add nodes (circles)
+        const node = svg.selectAll(".node")
+            .data(graph.nodes)
+            .enter().append("circle")
+            .attr("r", 12)
+            .attr("fill", d => d.color)  // ✅ Use color directly from nodes-links.json
+            .attr("stroke", "#000")
+            .attr("stroke-width", 1.5)
+            .call(d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragged)
+                .on("end", dragEnded));
 
-    // Link labels
-    const linkLabels = svg.selectAll(".link-label")
-        .data(graph.links)
-        .enter().append("text")
-        .attr("class", "link-label")
-        .attr("dy", -5)
-        .attr("font-size", "12px")
-        .attr("fill", "black")
-        .attr("text-anchor", "middle")
-        .text(d => d.label);
+        // Add node labels
+        const nodeText = svg.selectAll(".node-text")
+            .data(graph.nodes)
+            .enter().append("text")
+            .attr("class", "node-text")
+            .attr("font-size", "14px")
+            .attr("dx", 15)
+            .attr("dy", 5)
+            .text(d => d.name);
 
-    // Draw nodes
-    const node = svg.selectAll(".node")
-        .data(graph.nodes)
-        .enter().append("g")
-        .attr("class", "node")
-        .call(d3.drag()
-            .on("start", dragStarted)
-            .on("drag", dragged)
-            .on("end", dragEnded));
+        // Click event for displaying node details
+        node.on("click", function (event, d) {
+            if (clickableNodes.includes(d.id)) {
+                showNodeDetails(d.id, nodeDetails[d.id]);
+            }
+        });
 
-    // Draw circles
-    node.append("circle")
-        .attr("r", 12)
-        .attr("fill", d => getColor(d.group))
-        .on("click", (event, d) => showNodeDetails(d.id));
+        simulation.on("tick", () => {
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
 
-    // Add text labels (Node Names)
-    node.append("text")
-        .attr("dy", -18)
-        .attr("font-size", "14px")
-        .attr("font-weight", "bold")
-        .attr("text-anchor", "middle")
-        .text(d => d.id);
+            linkText.attr("x", d => (d.source.x + d.target.x) / 2)
+                .attr("y", d => (d.source.y + d.target.y) / 2);
 
-    function ticked() {
-        link.attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+            node.attr("cx", d => d.x)
+                .attr("cy", d => d.y);
 
-        linkLabels.attr("x", d => (d.source.x + d.target.x) / 2)
-                  .attr("y", d => (d.source.y + d.target.y) / 2);
+            nodeText.attr("x", d => d.x + 15)
+                .attr("y", d => d.y + 5);
+        });
 
-        node.attr("transform", d => `translate(${d.x}, ${d.y})`);
-    }
-
-    function dragStarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-
-    function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-    }
-
-    function dragEnded(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-    }
-
-    function getColor(group) {
-        return group === "yellow" ? "yellow" :
-               group === "green" ? "green" : "red";
-    }
-
-    function showNodeDetails(nodeId) {
-        if (clickableNodes.clickable.includes(nodeId)) {
-            const details = nodeDetails[nodeId] || {};
-            const description = details.description || "No description available.";
-            const columns = details.columns ? details.columns.map(c => `${c.name} (${c.type})`).join("\n") : "No columns defined.";
-            alert(`${nodeId}\n\n${description}\n\nColumns:\n${columns}`);
+        function dragStarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
         }
-    }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragEnded(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showNodeDetails(nodeId, details) {
+            let detailHtml = `<h3>${nodeId} Details</h3><table border='1'><tr><th>Column Name</th><th>Data Type</th></tr>`;
+
+            details.columns.forEach(column => {
+                detailHtml += `<tr><td>${column.name}</td><td>${column.type}</td></tr>`;
+            });
+
+            detailHtml += `</table><button onclick="closePopup()">Close</button>`;
+
+            const popup = document.getElementById("popup");
+            popup.innerHTML = detailHtml;
+            popup.style.display = "block";
+        }
+    });
 });
+
+// Function to close pop-up
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
