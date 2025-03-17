@@ -6,41 +6,8 @@
     <title>Data Vault Knowledge Graph</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f4f4f4;
-        }
-        svg {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-        }
-        .link {
-            stroke: #999;
-            stroke-opacity: 0.8;
-            stroke-width: 2px;
-            marker-end: url(#arrow);
-        }
-        .node text {
-            font-size: 14px;
-            font-weight: bold;
-            text-anchor: middle;
-            fill: black;
-            pointer-events: none;
-        }
-        .link-label {
-            font-size: 12px;
-            fill: black;
-            font-weight: bold;
-            pointer-events: none;
-        }
+        body { margin: 0; overflow: hidden; }
+        svg { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
