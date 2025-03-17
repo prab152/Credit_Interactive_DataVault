@@ -6,17 +6,17 @@
     <title>Data Vault - Credit Domain</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; overflow: hidden; }
-        svg { width: 100vw; height: 100vh; background: #f8f8f8; }
-
-        .link { stroke: black; stroke-width: 2px; marker-end: url(#arrow); }
-        .node circle { stroke: black; stroke-width: 1.5px; cursor: grab; }
-        .label { font-size: 12px; fill: black; pointer-events: none; }
+        body { font-family: Arial, sans-serif; }
+        svg { width: 100vw; height: 100vh; border: 1px solid #ccc; }
+        .node circle { stroke: #000; stroke-width: 1.5px; }
+        .link { stroke-width: 2px; marker-end: url(#arrow); }
+        .label { font-size: 12px; fill: black; }
     </style>
 </head>
 <body>
     <svg></svg>
     <script>
+        // Define the nodes
         const nodes = [
             { id: "Customer", group: "yellow" },
             { id: "Loan", group: "yellow" },
@@ -60,10 +60,12 @@
             { source: "Bucket_Key_Loan", target: "Loan", label: "groups" },
             { source: "Bucket_Key_Loan", target: "Loan_Customer_Link", label: "groups" }
         ];
+
+        // Set up the SVG canvas
         const width = window.innerWidth, height = window.innerHeight;
         const svg = d3.select("svg");
 
-        // Define arrow marker for edges
+        // Define arrow marker for link direction
         svg.append("defs").append("marker")
             .attr("id", "arrow")
             .attr("viewBox", "0 -5 10 10")
@@ -76,33 +78,30 @@
             .attr("d", "M0,-5L10,0L0,5")
             .style("fill", "black");
 
+        // Define force simulation
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(150))
             .force("charge", d3.forceManyBody().strength(-300))
             .force("center", d3.forceCenter(width / 2, height / 2));
 
-        // Create edges **first** so they are behind nodes
+        // Add links
         const link = svg.selectAll(".link")
             .data(links)
             .enter().append("line")
             .attr("class", "link");
 
-        // Add edge labels
+        // Add link labels
         const linkText = svg.selectAll(".link-label")
             .data(links)
             .enter().append("text")
             .attr("class", "label")
             .text(d => d.label);
 
-        // Create nodes
+        // Add nodes
         const node = svg.selectAll(".node")
             .data(nodes)
             .enter().append("g")
-            .attr("class", "node")
-            .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
+            .attr("class", "node");
 
         node.append("circle")
             .attr("r", 10)
@@ -120,27 +119,9 @@
                 .attr("y2", d => d.target.y);
 
             node.attr("transform", d => `translate(${d.x},${d.y})`);
-            
             linkText.attr("x", d => (d.source.x + d.target.x) / 2)
                 .attr("y", d => (d.source.y + d.target.y) / 2);
         });
-
-        function dragstarted(event, d) {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-        }
-
-        function dragged(event, d) {
-            d.fx = event.x;
-            d.fy = event.y;
-        }
-
-        function dragended(event, d) {
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-        }
     </script>
 </body>
 </html>
