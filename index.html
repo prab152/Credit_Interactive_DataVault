@@ -3,29 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Vault Logical Data Model</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <title>Data Vault Knowledge Graph</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h2>Bank's Credit Data Vault Model</h2>
-    <svg width="900" height="600"></svg>
-
-    <!-- Popup Modal for Clickable Node -->
-    <div id="node-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3 id="node-title"></h3>
-            <p id="node-description"></p>
-            <table id="node-table">
-                <thead>
-                    <tr><th>Column Name</th><th>Data Type</th></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
-
+    <svg width="100%" height="100%"></svg>
+    <div id="tooltip" class="hidden"></div>
     <script src="graph.js"></script>
 </body>
 </html>
