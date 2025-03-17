@@ -9,7 +9,7 @@
         body { font-family: Arial, sans-serif; }
         svg { width: 100vw; height: 100vh; border: 1px solid #ccc; }
         .node circle { stroke: #000; stroke-width: 1.5px; }
-        .link { stroke-width: 2px; marker-end: url(#arrow); }
+        .link { stroke: black; stroke-width: 2px; marker-end: url(#arrow); }
         .label { font-size: 12px; fill: black; }
     </style>
 </head>
@@ -83,7 +83,10 @@
         const link = svg.selectAll(".link")
             .data(links)
             .enter().append("line")
-            .attr("class", "link");
+            .attr("class", "link")
+            .attr("stroke", "black")
+            .attr("stroke-width", 2)
+            .attr("marker-end", "url(#arrow)");
 
         const linkText = svg.selectAll(".link-label")
             .data(links)
