@@ -1,4 +1,4 @@
-// Set SVG size to full screen
+// Set SVG size
 const width = window.innerWidth;
 const height = window.innerHeight;
 
@@ -39,7 +39,11 @@ Promise.all([
     const link = svg.selectAll(".link")
         .data(graph.links)
         .enter().append("line")
-        .attr("class", "link");
+        .attr("class", "link")
+        .attr("stroke", "#999")
+        .attr("stroke-opacity", 0.8)
+        .attr("stroke-width", 2)
+        .attr("marker-end", "url(#arrow)");
 
     // Link labels
     const linkLabels = svg.selectAll(".link-label")
@@ -47,6 +51,9 @@ Promise.all([
         .enter().append("text")
         .attr("class", "link-label")
         .attr("dy", -5)
+        .attr("font-size", "12px")
+        .attr("fill", "black")
+        .attr("text-anchor", "middle")
         .text(d => d.label);
 
     // Draw nodes
@@ -63,11 +70,14 @@ Promise.all([
     node.append("circle")
         .attr("r", 12)
         .attr("fill", d => getColor(d.group))
-        .on("click", d => showNodeDetails(d.id));
+        .on("click", (event, d) => showNodeDetails(d.id));
 
-    // Add text labels
+    // Add text labels (Node Names)
     node.append("text")
         .attr("dy", -18)
+        .attr("font-size", "14px")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "middle")
         .text(d => d.id);
 
     function ticked() {
