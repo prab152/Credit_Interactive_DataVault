@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Click event for displaying node details
         node.on("click", function (event, d) {
-            if (clickableNodes.includes(d.id)) {
+            if (Array.isArray(clickableNodes.clickable) && clickableNodes.clickable.includes(d.id) && nodeDetails[d.id]) {
                 showNodeDetails(d.id, nodeDetails[d.id]);
             }
         });
