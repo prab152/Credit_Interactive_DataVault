@@ -8,9 +8,23 @@
     <style>
         body { font-family: Arial, sans-serif; }
         svg { width: 100vw; height: 100vh; border: 1px solid #ccc; }
-        .node circle { stroke: #000; stroke-width: 1.5px; }
-        .link { stroke: black; stroke-width: 2px; marker-end: url(#arrow); }
-        .label { font-size: 12px; fill: black; }
+        
+        /* Ensure edges are visible */
+        .link { 
+            stroke: black; 
+            stroke-width: 2px; 
+            marker-end: url(#arrow); 
+        }
+
+        .node circle { 
+            stroke: black; 
+            stroke-width: 1.5px; 
+        }
+
+        .label { 
+            font-size: 12px; 
+            fill: black; 
+        }
     </style>
 </head>
 <body>
@@ -63,6 +77,7 @@
         const width = window.innerWidth, height = window.innerHeight;
         const svg = d3.select("svg");
 
+        // Define arrow marker for edges
         svg.append("defs").append("marker")
             .attr("id", "arrow")
             .attr("viewBox", "0 -5 10 10")
@@ -76,28 +91,32 @@
             .style("fill", "black");
 
         const simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(150))
+            .force("link", d3.forceLink(links).id(d => d.id).distance(120))
             .force("charge", d3.forceManyBody().strength(-300))
             .force("center", d3.forceCenter(width / 2, height / 2));
 
+        // Create edges **first** so they are behind nodes
         const link = svg.selectAll(".link")
             .data(links)
             .enter().append("line")
-            .attr("class", "link")
-            .attr("stroke", "black")
-            .attr("stroke-width", 2)
-            .attr("marker-end", "url(#arrow)");
+            .attr("class", "link");
 
+        // Add edge labels
         const linkText = svg.selectAll(".link-label")
             .data(links)
             .enter().append("text")
             .attr("class", "label")
             .text(d => d.label);
 
+        // Create nodes
         const node = svg.selectAll(".node")
             .data(nodes)
             .enter().append("g")
-            .attr("class", "node");
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
 
         node.append("circle")
             .attr("r", 10)
@@ -115,9 +134,28 @@
                 .attr("y2", d => d.target.y);
 
             node.attr("transform", d => `translate(${d.x},${d.y})`);
+            
             linkText.attr("x", d => (d.source.x + d.target.x) / 2)
                 .attr("y", d => (d.source.y + d.target.y) / 2);
         });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
     </script>
 </body>
 </html>
+
