@@ -14,7 +14,21 @@
     </style>
 </head>
 <body>
-    <svg></svg>
+    <h1>Credit Data Vault - Interactive Graph</h1>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="graph.js"></script>
+
+    <!-- Pop-up for Node Details -->
+    <div id="popup" style="
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -20%);
+        background: white;
+        padding: 20px;
+        border: 2px solid black;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    "></div>
 </body>
 </html>
