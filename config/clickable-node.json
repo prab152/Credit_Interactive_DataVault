@@ -1,3 +1,6 @@
 {
-    "nodeId": "Customer"
+    "clickable": [
+        "Customer", "Loan", "Product", "SME_Credit", "Mortgage_Credit", "Farmer_Credit", "Corporate_Credit",
+        "Geography", "InterestRate", "CreditScore", "LoanDetails", "ForexData", "Currency", "Bucket_Key_Loan"
+    ]
 }
